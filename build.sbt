@@ -17,3 +17,5 @@ jacoco.settings
 
 jacoco.reportFormats in jacoco.Config := Seq(
   XMLReport(encoding = "utf-8"))
+
+test in assembly := {}

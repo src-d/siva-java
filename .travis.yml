@@ -4,9 +4,12 @@ scala:
    - 2.12.3
 jdk:
   - openjdk8
-matrix:
-  fast_finish: true
+cache:
+  directories:
+    - $HOME/.ivy2
+    - $HOME/.sbt
 script:
-  - sbt ++$TRAVIS_SCALA_VERSION jacoco:cover
+  - ./sbt ++$TRAVIS_SCALA_VERSION jacoco:cover
+  - ./siva-unpack ./src/test/resources/basic.siva ./basic-unpacked
 after_success:
   - bash <(curl -s https://codecov.io/bash)
