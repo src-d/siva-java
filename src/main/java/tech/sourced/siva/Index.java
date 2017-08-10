@@ -22,7 +22,6 @@ abstract class BaseIndex implements Index {
     /**
      * This method will be called in the same order that the index has been read.
      *
-     * @param entry
      */
     abstract void add(IndexEntry entry);
 
@@ -41,11 +40,7 @@ abstract class BaseIndex implements Index {
 }
 
 class FilteredIndex extends BaseIndex {
-    private Map<String, IndexEntry> entries;
-
-    FilteredIndex() {
-        this.entries = new HashMap<>();
-    }
+    private final Map<String, IndexEntry> entries = new HashMap<>();
 
     @Override
     void add(IndexEntry entry) {
@@ -65,11 +60,7 @@ class FilteredIndex extends BaseIndex {
 }
 
 class CompleteIndex extends BaseIndex {
-    private List<IndexEntry> entries;
-
-    CompleteIndex() {
-        this.entries = new ArrayList<>();
-    }
+    private final List<IndexEntry> entries = new ArrayList<>();
 
     @Override
     void add(IndexEntry entry) {
