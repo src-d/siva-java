@@ -14,7 +14,6 @@ import scala.collection.JavaConverters._
 import scala.io.Source
 
 class SivaReaderSpec extends FlatSpec with Matchers {
-  private val filenamesDeleted = "readme.txt" :: "todo.txt" :: Nil
   private val filenamesFolders =
     "numbers/1" ::
       "numbers/2" ::
@@ -26,7 +25,7 @@ class SivaReaderSpec extends FlatSpec with Matchers {
   private val fixtures = Table(
     ("filename", "elements", "repeatedElements"),
     ("basic.siva", SivaReaderSpec.filenames, false),
-    ("deleted.siva", filenamesDeleted, true),
+    ("deleted.siva", SivaReaderSpec.filenamesDeleted, true),
     ("dirs.siva", filenamesFolders, false),
     ("overwritten.siva", SivaReaderSpec.filenames, true)
   )
@@ -116,6 +115,7 @@ class SivaReaderSpec extends FlatSpec with Matchers {
 
 object SivaReaderSpec {
   val filenames = "gopher.txt" :: "readme.txt" :: "todo.txt" :: Nil
+  val filenamesDeleted = "readme.txt" :: "todo.txt" :: Nil
 
   def getReader(filename: String): SivaReader = {
     val resourceUrl = getClass.getResource("/" + filename)

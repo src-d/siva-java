@@ -15,11 +15,10 @@ public class SivaCLI {
         String dstDir = args.length == 2 ? args[1] : new File(srcSivaFile).getParent() + "/unpacked";
 
         try {
-            SivaReader reader = null;
-            reader = new SivaReader(new File(srcSivaFile));
-            SivaUnpacker unpacker = new SivaUnpacker(reader, dstDir);
+            SivaReader reader = new SivaReader(new File(srcSivaFile));
+            SivaUnpacker unpacker = new SivaUnpacker(reader);
             System.out.println("Unpacking " +srcSivaFile + " to " + dstDir);
-            unpacker.unpack();
+            unpacker.unpack(dstDir);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (SivaException e) {

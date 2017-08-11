@@ -22,15 +22,12 @@ import java.util.zip.CRC32;
  */
 public class SivaUnpacker {
     SivaReader reader;
-    String dstDir;
 
-    public SivaUnpacker(SivaReader reader, String dstDir) {
+    public SivaUnpacker(SivaReader reader) {
         this.reader = reader;
-        this.dstDir = dstDir;
     }
 
-    public SivaUnpacker(String sivaFilePath, String dstDir) throws SivaException {
-        this.dstDir = dstDir;
+    public SivaUnpacker(String sivaFilePath) throws SivaException {
         try {
             this.reader = new SivaReader(new File(sivaFilePath));
         } catch (FileNotFoundException e) {
@@ -38,37 +35,38 @@ public class SivaUnpacker {
         }
     }
 
-    public void unpack() throws SivaException {
-        File dst = new File(this.dstDir);
+    public void unpack(String dstDir) throws SivaException {
+        File dst = new File(dstDir);
         if (!dst.exists()) {
-            System.out.print("Directory " + this.dstDir + " does not exist, creating " + dst.getAbsolutePath());
-            dst.mkdir();
+            System.out.println("Directory " + dstDir + " does not exist, creating " + dst.getAbsolutePath());
+            if (!dst.mkdirs()) {
+                throw new SivaException("Failed to created a directory: " + dst.getAbsolutePath());
+            }
         }
 
-        List<IndexEntry> entries = null;
-        entries = this.reader.getIndex().getFilteredIndex().getEntries();
-
-        //CRC32 crc32 = new CRC32();
+        List<IndexEntry> entries = this.reader.getIndex().getFilteredIndex().getEntries();
         for (IndexEntry entry : entries) {
-            extractEntry(entry);
+            this.extractEntry(entry, dstDir);
         }
         this.reader.close();
     }
 
-    private void extractEntry(IndexEntry entry) throws SivaException {
-        this.extractEntry(entry, null);
+    private void extractEntry(IndexEntry entry, String dstDir) throws SivaException {
+        this.extractEntry(entry, dstDir, null);
     }
 
-    private void extractEntry(IndexEntry entry, CRC32 crc32) throws SivaException {
+    private void extractEntry(IndexEntry entry, String dstDir, CRC32 crc32) throws SivaException {
         InputStream src = this.reader.getEntry(entry);
         try {
-            OutputStream dst = createFileFor(entry);
+            OutputStream dst = createFileFor(entry, dstDir);
             IOUtils.copy(src, dst);
         } catch (FileNotFoundException e) {
             System.out.println("Failed to create " + entry.getName() + " in " + dstDir);
+            e.printStackTrace();
             return;
         } catch (IOException e) {
             System.out.println("Failed to copy " + entry.getName() + " to " + dstDir);
+            e.printStackTrace();
             return;
         }
         if (crc32 != null) {
@@ -76,11 +74,14 @@ public class SivaUnpacker {
         }
     }
 
-    private OutputStream createFileFor(IndexEntry entry) throws FileNotFoundException {
-        File dst = Paths.get(this.dstDir, entry.getName()).toAbsolutePath().toFile();
+    private OutputStream createFileFor(IndexEntry entry, String dstDir) throws FileNotFoundException {
+        File dst = Paths.get(dstDir, entry.getName()).toAbsolutePath().toFile();
         if (dst.exists()) { // warn
             System.out.println("File " + dst + " already exist, content will be overwritten");
+        } else {
+            dst.getParentFile().mkdirs();
         }
+
         //TODO(bzz) apply permissions: entry.getFileMode() to dst
         return new FileOutputStream(dst);
     }
