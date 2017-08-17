@@ -2,14 +2,18 @@ package tech.sourced.siva;
 
 import org.apache.commons.io.IOUtils;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermission;
 import java.util.List;
+import java.util.Set;
 import java.util.zip.CRC32;
 
 /**
@@ -21,10 +25,16 @@ import java.util.zip.CRC32;
  * @see SivaReader#getEntry(IndexEntry)
  */
 public class SivaUnpacker {
-    SivaReader reader;
+    private SivaReader reader;
+    private Boolean ignorePerms = true;
 
     public SivaUnpacker(SivaReader reader) {
         this.reader = reader;
+    }
+
+    public SivaUnpacker(SivaReader reader, Boolean ignorePermissions) {
+        this(reader);
+        this.ignorePerms = ignorePermissions;
     }
 
     public SivaUnpacker(String sivaFilePath) throws SivaException {
@@ -33,6 +43,11 @@ public class SivaUnpacker {
         } catch (FileNotFoundException e) {
             throw new SivaException("Could not read " + sivaFilePath, e);
         }
+    }
+
+    public SivaUnpacker(String sivaFilePath, Boolean ignorePermissions) throws SivaException {
+        this(sivaFilePath);
+        this.ignorePerms = ignorePermissions;
     }
 
     public void unpack(String dstDir) throws SivaException {
@@ -56,10 +71,18 @@ public class SivaUnpacker {
     }
 
     private void extractEntry(IndexEntry entry, String dstDir, CRC32 crc32) throws SivaException {
+        File dstFile = Paths.get(dstDir, entry.getName()).toAbsolutePath().toFile();
+
         InputStream src = this.reader.getEntry(entry);
+        OutputStream dst = null;
         try {
-            OutputStream dst = createFileFor(entry, dstDir);
+            dst = createFileFor(dstFile);
             IOUtils.copy(src, dst);
+
+            if (!this.ignorePerms) {
+                Set<PosixFilePermission> perms = entry.getFileMode();
+                Files.setPosixFilePermissions(dstFile.toPath(), perms);
+            }
         } catch (FileNotFoundException e) {
             System.out.println("Failed to create " + entry.getName() + " in " + dstDir);
             e.printStackTrace();
@@ -68,21 +91,22 @@ public class SivaUnpacker {
             System.out.println("Failed to copy " + entry.getName() + " to " + dstDir);
             e.printStackTrace();
             return;
+        } finally {
+            close(src);
+            close(dst);
         }
+
         if (crc32 != null) {
             calculateCRC(entry, crc32, src);
         }
     }
 
-    private OutputStream createFileFor(IndexEntry entry, String dstDir) throws FileNotFoundException {
-        File dst = Paths.get(dstDir, entry.getName()).toAbsolutePath().toFile();
+    private OutputStream createFileFor(File dst) throws FileNotFoundException {
         if (dst.exists()) { // warn
             System.out.println("File " + dst + " already exist, content will be overwritten");
         } else {
             dst.getParentFile().mkdirs();
         }
-
-        //TODO(bzz) apply permissions: entry.getFileMode() to dst
         return new FileOutputStream(dst);
     }
 
@@ -97,6 +121,14 @@ public class SivaUnpacker {
             }
         } catch (IOException e) {
             throw new SivaException("Failed to calcuate CRC for " + entry.getName(), e);
+        }
+    }
+
+    private static void close(Closeable stream) {
+        if (null != stream) {
+            try { stream.close(); } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

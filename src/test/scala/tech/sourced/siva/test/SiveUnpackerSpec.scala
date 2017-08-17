@@ -1,7 +1,7 @@
 package tech.sourced.siva.test
 
 import java.io.File
-import java.nio.file.Paths
+import java.nio.file.{AccessDeniedException, Files, Paths}
 
 import org.apache.commons.io.FileUtils
 import org.scalatest.{BeforeAndAfterAll, FlatSpec, Matchers}
@@ -45,7 +45,22 @@ class SiveUnpackerSpec extends FlatSpec with Matchers with BeforeAndAfterAll {
     val dir = new File(dstDir + "/dir1")
     dir.exists() should be(true)
     dir.isDirectory should be(true)
+  }
 
+  "unpack" should "change file permissions, if instructed" in {
+    val sivaUnpacker = new SivaUnpacker(SivaReaderSpec.getReader("overwritten.siva"), false)
+
+    val dstDir = dstBaseDir + "overwritten"
+    sivaUnpacker.unpack(dstDir)
+
+    val changedFile = new File(dstDir + "/gopher.txt")
+    try {
+      Files.getPosixFilePermissions(changedFile.toPath)
+    } catch {
+      case e: AccessDeniedException => assert(true)
+      case _ => assert(false)
+    }
+    //PosixFilePermissions.toString(Files.getPosixFilePermissions(changedFile.toPath)) should be("rwxrwxrwx")
   }
 
   override def afterAll() = {
