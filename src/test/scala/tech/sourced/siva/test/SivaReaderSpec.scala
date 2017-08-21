@@ -1,7 +1,7 @@
 package tech.sourced.siva.test
 
 import java.io.File
-import java.nio.file.attribute.{FileTime, PosixFilePermissions}
+import java.nio.file.attribute.PosixFilePermissions
 import java.util.concurrent.TimeUnit
 import java.util.zip.CRC32
 
@@ -105,7 +105,6 @@ class SivaReaderSpec extends FlatSpec with Matchers {
 
     val configUpdates = sivaReader.getIndex.getFilteredIndex.glob("config").asScala
     configUpdates.length should be(1)
-
 
     val changedFile = sivaReader.getEntry(configUpdates.last)
     val wcL = Source.fromInputStream(changedFile).getLines.toList

@@ -57,6 +57,8 @@ public class IndexReader {
                     index.add(this.readEntry());
                 }
 
+                index.endIndexBlock();
+
                 // go to the next index
                 this.sivaFile.seek(this.sivaFile.getFilePointer() - indexFooter.getBlockSize() + INDEX_FOOTER_SIZE);
             }
