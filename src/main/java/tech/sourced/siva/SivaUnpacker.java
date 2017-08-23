@@ -17,15 +17,15 @@ import java.util.Set;
 import java.util.zip.CRC32;
 
 /**
- * This is a high-level API for extracting bare git repository
- * (content of .git) from a given .siva file.
+ * This is a high-level API for extracting files
+ * from a given .siva archive.
  * <p>
  * Actual reading is done by SivaReader
  *
  * @see SivaReader#getEntry(IndexEntry)
  */
 public class SivaUnpacker {
-    private SivaReader reader;
+    private final SivaReader reader;
     private Boolean ignorePerms = true;
 
     public SivaUnpacker(SivaReader reader) {
