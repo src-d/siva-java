@@ -15,6 +15,9 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.util.List;
 import java.util.Set;
 import java.util.zip.CRC32;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * This is a high-level API for extracting files
@@ -25,6 +28,7 @@ import java.util.zip.CRC32;
  * @see SivaReader#getEntry(IndexEntry)
  */
 public class SivaUnpacker {
+    private static final Logger log = LoggerFactory.getLogger(SivaUnpacker.class);
     private final SivaReader reader;
     private Boolean ignorePerms = true;
 
@@ -53,7 +57,7 @@ public class SivaUnpacker {
     public void unpack(String dstDir) throws SivaException {
         File dst = new File(dstDir);
         if (!dst.exists()) {
-            System.out.println("Directory " + dstDir + " does not exist, creating " + dst.getAbsolutePath());
+            log.info("Directory " + dstDir + " does not exist, creating " + dst.getAbsolutePath());
             if (!dst.mkdirs()) {
                 throw new SivaException("Failed to created a directory: " + dst.getAbsolutePath());
             }
@@ -84,12 +88,10 @@ public class SivaUnpacker {
                 Files.setPosixFilePermissions(dstFile.toPath(), perms);
             }
         } catch (FileNotFoundException e) {
-            System.out.println("Failed to create " + entry.getName() + " in " + dstDir);
-            e.printStackTrace();
+            log.error("Failed to create " + entry.getName() + " in " + dstDir, e);
             return;
         } catch (IOException e) {
-            System.out.println("Failed to copy " + entry.getName() + " to " + dstDir);
-            e.printStackTrace();
+            log.error("Failed to copy " + entry.getName() + " to " + dstDir, e);
             return;
         } finally {
             close(src);
@@ -103,7 +105,7 @@ public class SivaUnpacker {
 
     private OutputStream createFileFor(File dst) throws FileNotFoundException {
         if (dst.exists()) { // warn
-            System.out.println("File " + dst + " already exist, content will be overwritten");
+            log.info("File " + dst + " already exist, content will be overwritten");
         } else {
             dst.getParentFile().mkdirs();
         }

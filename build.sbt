@@ -10,7 +10,8 @@ lazy val root = (project in file(".")).
     )),
     name := "siva-java",
     libraryDependencies += scalaTest % Test,
-    libraryDependencies += commonsIO
+    libraryDependencies += commonsIO,
+    libraryDependencies += slf4j
   )
 
 jacoco.settings
