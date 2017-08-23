@@ -57,10 +57,9 @@ class SiveUnpackerSpec extends FlatSpec with Matchers with BeforeAndAfterAll {
     try {
       Files.getPosixFilePermissions(changedFile.toPath)
     } catch {
-      case e: AccessDeniedException => assert(true)
-      case _ => assert(false)
+      case _: AccessDeniedException => assert(true)
+      case _: Throwable => assert(false)
     }
-    //PosixFilePermissions.toString(Files.getPosixFilePermissions(changedFile.toPath)) should be("rwxrwxrwx")
   }
 
   override def afterAll() = {

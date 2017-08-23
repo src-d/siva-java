@@ -14,24 +14,9 @@ import scala.collection.JavaConverters._
 import scala.io.Source
 
 class SivaReaderSpec extends FlatSpec with Matchers {
-  private val filenamesFolders =
-    "numbers/1" ::
-      "numbers/2" ::
-      "numbers/3" ::
-      "letters/a" ::
-      "letters/b" ::
-      "letters/c" :: Nil
-
-  private val fixtures = Table(
-    ("filename", "elements", "repeatedElements"),
-    ("basic.siva", SivaReaderSpec.filenames, false),
-    ("deleted.siva", SivaReaderSpec.filenamesDeleted, true),
-    ("dirs.siva", filenamesFolders, false),
-    ("overwritten.siva", SivaReaderSpec.filenames, true)
-  )
 
   "Index" should "be read correctly" in {
-    forAll(fixtures) { (filename: String, elements: List[String], repeated: Boolean) =>
+    forAll(SivaReaderSpec.fixtures) { (filename: String, elements: List[String], repeated: Boolean) =>
       val sivaReader = SivaReaderSpec.getReader(filename)
       val completeIndex = sivaReader.getIndex.getCompleteIndex
       val filteredIndex = sivaReader.getIndex.getFilteredIndex
@@ -49,7 +34,7 @@ class SivaReaderSpec extends FlatSpec with Matchers {
   }
 
   "Glob" should "obtain filtered elements only" in {
-    forAll(fixtures) { (filename: String, _: List[String], _: Boolean) =>
+    forAll(SivaReaderSpec.fixtures) { (filename: String, _: List[String], _: Boolean) =>
       val sivaReader = SivaReaderSpec.getReader(filename)
       val completeIndex = sivaReader.getIndex.getCompleteIndex
 
@@ -62,7 +47,7 @@ class SivaReaderSpec extends FlatSpec with Matchers {
   }
 
   "getEntry" should "read correctly a file into a siva file" in {
-    forAll(fixtures) { (filename: String, elements: List[String], repeated: Boolean) =>
+    forAll(SivaReaderSpec.fixtures) { (filename: String, elements: List[String], repeated: Boolean) =>
       val sivaReader = SivaReaderSpec.getReader(filename)
 
       val entries = sivaReader.getIndex.getCompleteIndex.getEntries.asScala
@@ -114,8 +99,25 @@ class SivaReaderSpec extends FlatSpec with Matchers {
 }
 
 object SivaReaderSpec {
+
   val filenames = "gopher.txt" :: "readme.txt" :: "todo.txt" :: Nil
   val filenamesDeleted = "readme.txt" :: "todo.txt" :: Nil
+
+  private val filenamesFolders =
+    "numbers/1" ::
+      "numbers/2" ::
+      "numbers/3" ::
+      "letters/a" ::
+      "letters/b" ::
+      "letters/c" :: Nil
+
+  val fixtures = Table(
+    ("filename", "elements", "repeatedElements"),
+    ("basic.siva", SivaReaderSpec.filenames, false),
+    ("deleted.siva", SivaReaderSpec.filenamesDeleted, true),
+    ("dirs.siva", SivaReaderSpec.filenamesFolders, false),
+    ("overwritten.siva", SivaReaderSpec.filenames, true)
+  )
 
   def getReader(filename: String): SivaReader = {
     val resourceUrl = getClass.getResource("/" + filename)
