@@ -46,6 +46,8 @@ public class IndexReader {
                     break;
                 }
 
+                long block = this.sivaFile.getFilePointer();
+
                 this.sivaFile.seek(this.sivaFile.getFilePointer() - INDEX_FOOTER_SIZE);
                 IndexFooter indexFooter = this.readIndexFooter();
                 this.sivaFile.seek(this.sivaFile.getFilePointer() - INDEX_FOOTER_SIZE - indexFooter.getIndexSize());
@@ -54,8 +56,10 @@ public class IndexReader {
                 this.readIndexVersion();
 
                 for (int i = 0; i < indexFooter.getEntryCount(); i++) {
-                    index.add(this.readEntry());
+                    index.add(this.readEntry(indexFooter, block));
                 }
+
+                index.endIndexBlock();
 
                 // go to the next index
                 this.sivaFile.seek(this.sivaFile.getFilePointer() - indexFooter.getBlockSize() + INDEX_FOOTER_SIZE);
@@ -67,7 +71,7 @@ public class IndexReader {
         }
     }
 
-    private IndexEntry readEntry() throws IOException {
+    private IndexEntry readEntry(IndexFooter indexFooter, long block) throws IOException {
         int entryNameLength = this.sivaFile.readInt();
         byte[] name = new byte[entryNameLength];
         this.sivaFile.readFully(name);
@@ -84,12 +88,13 @@ public class IndexReader {
 
         return new IndexEntry(
                 new String(name),
-                FileModeUtils.posixFilePermissions(fileMode),
                 modificationTime,
+                FileModeUtils.posixFilePermissions(fileMode),
+                flag,
                 fileOffset,
                 fileSize,
                 crc32,
-                flag
+                (block - indexFooter.getBlockSize()) + fileOffset
         );
     }
 

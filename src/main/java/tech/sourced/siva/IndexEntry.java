@@ -8,12 +8,19 @@ public class IndexEntry extends Header {
     private final long intStart;
     private final long size;
     private final int crc32;
+    private final long absStart;
 
-    IndexEntry(String name, Set<PosixFilePermission> fileMode, FileTime modificationTime, long intStart, long size, int crc32, Flag flag) {
+    public IndexEntry(String name, FileTime modificationTime, Set<PosixFilePermission> fileMode,
+                      Flag flag, long intStart, long size, int crc32, long absStart) {
         super(name, modificationTime, fileMode, flag);
         this.intStart = intStart;
         this.size = size;
         this.crc32 = crc32;
+        this.absStart = absStart;
+    }
+
+    public long getAbsStart() {
+        return absStart;
     }
 
     public long getIntStart() {

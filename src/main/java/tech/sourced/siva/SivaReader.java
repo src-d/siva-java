@@ -39,7 +39,7 @@ public class SivaReader {
         try {
             MappedByteBuffer mbb = this.channel.map(
                     FileChannel.MapMode.READ_ONLY,
-                    indexEntry.getIntStart(),
+                    indexEntry.getAbsStart(),
                     indexEntry.getSize()
             );
 

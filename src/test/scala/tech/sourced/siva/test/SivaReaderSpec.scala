@@ -1,7 +1,7 @@
 package tech.sourced.siva.test
 
 import java.io.File
-import java.nio.file.attribute.{FileTime, PosixFilePermissions}
+import java.nio.file.attribute.PosixFilePermissions
 import java.util.concurrent.TimeUnit
 import java.util.zip.CRC32
 
@@ -11,6 +11,7 @@ import org.scalatest.prop.TableDrivenPropertyChecks._
 import tech.sourced.siva.SivaReader
 
 import scala.collection.JavaConverters._
+import scala.io.Source
 
 class SivaReaderSpec extends FlatSpec with Matchers {
   private val filenames = "gopher.txt" :: "readme.txt" :: "todo.txt" :: Nil
@@ -97,6 +98,21 @@ class SivaReaderSpec extends FlatSpec with Matchers {
     sivaReader.close()
   }
 
+  "file content" should "change if the file has been appended" in {
+    val sivaReader = getReader("basic-config-appended.siva")
+
+    sivaReader.getIndex.getCompleteIndex.glob("config").size() should be(2)
+
+    val configUpdates = sivaReader.getIndex.getFilteredIndex.glob("config").asScala
+    configUpdates.length should be(1)
+
+    val changedFile = sivaReader.getEntry(configUpdates.last)
+    val wcL = Source.fromInputStream(changedFile).getLines.toList
+    wcL.length should be(8)
+
+    sivaReader.close()
+  }
+
   private def getReader(filename: String): SivaReader = {
     val resourceUrl = getClass.getResource("/" + filename)
     val file = new File(resourceUrl.toURI)
@@ -105,4 +121,5 @@ class SivaReaderSpec extends FlatSpec with Matchers {
 
     new SivaReader(file)
   }
+
 }
