@@ -38,7 +38,7 @@ class SivaReaderSpec extends FlatSpec with Matchers {
       val completeIndex = sivaReader.getIndex.getCompleteIndex
       val filteredIndex = sivaReader.getIndex.getFilteredIndex
 
-      filteredIndex.getEntries.asScala.map(_.getName) should contain allElementsOf elements
+      filteredIndex.getEntries.asScala.map(_.getName) should contain theSameElementsAs elements
 
       if (repeated) {
         completeIndex.getEntries.size() shouldNot be(filteredIndex.getEntries.size())

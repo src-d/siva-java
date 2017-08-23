@@ -60,6 +60,7 @@ class FilteredIndex extends BaseIndex {
 
         if (entry.getFlag() == Flag.DELETE) {
             this.deleted.add(name);
+            this.blockEntries.remove(name);
             return;
         }
 
