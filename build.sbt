@@ -10,10 +10,13 @@ lazy val root = (project in file(".")).
     )),
     name := "siva-java",
     libraryDependencies += scalaTest % Test,
-    libraryDependencies += commonsIO % Test
+    libraryDependencies += commonsIO,
+    libraryDependencies += slf4j
   )
 
 jacoco.settings
 
 jacoco.reportFormats in jacoco.Config := Seq(
   XMLReport(encoding = "utf-8"))
+
+test in assembly := {}
