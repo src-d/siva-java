@@ -1,12 +1,23 @@
 language: scala
+
 scala:
    - 2.11.11
    - 2.12.3
+
 jdk:
+  - jdk8
   - openjdk8
+
+cache:
+  directories:
+    - $HOME/.sbt
+    - $HOME/.ivy2
+
 matrix:
   fast_finish: true
+  
 script:
-  - sbt ++$TRAVIS_SCALA_VERSION jacoco:cover
+  - make travis-test
+
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - bash <(curl -s https://codecov.io/bash) 
