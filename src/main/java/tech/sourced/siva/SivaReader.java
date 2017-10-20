@@ -14,6 +14,7 @@ import java.nio.channels.FileChannel;
 public class SivaReader {
 
     private final RandomAccessFile sivaFile;
+    private final String sivaFileName;
     private final FileChannel channel;
 
     /**
@@ -24,6 +25,7 @@ public class SivaReader {
      */
     public SivaReader(File sivaFile) throws FileNotFoundException {
         this.sivaFile = new RandomAccessFile(sivaFile, "r");
+        this.sivaFileName = sivaFile.getName();
         this.channel = this.sivaFile.getChannel();
     }
 
@@ -56,7 +58,7 @@ public class SivaReader {
      * @return an {@link IndexReader}
      */
     public IndexReader getIndex() {
-        return new IndexReader(this.sivaFile);
+        return new IndexReader(this.sivaFile, this.sivaFileName);
     }
 
     /**

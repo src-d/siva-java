@@ -12,9 +12,11 @@ public class IndexReader {
     private static final byte[] INDEX_SIGNATURE = {'I', 'B', 'A'};
 
     private final RandomAccessFile sivaFile;
+    private final String sivaFileName;
 
-    IndexReader(RandomAccessFile sivaFile) {
+    IndexReader(RandomAccessFile sivaFile, String sivaFileName) {
         this.sivaFile = sivaFile;
+        this.sivaFileName = sivaFileName;
     }
 
     /**
@@ -67,7 +69,7 @@ public class IndexReader {
 
             return index;
         } catch (IOException e) {
-            throw new SivaException("Error reading index", e);
+            throw new SivaException("Error reading index of " + this.sivaFileName + " file.", e);
         }
     }
 
@@ -110,7 +112,7 @@ public class IndexReader {
     private void readIndexVersion() throws IOException, SivaException {
         int version = this.sivaFile.readByte();
         if (version != INDEX_VERSION) {
-            throw new SivaException("invalid index version");
+            throw new SivaException("Invalid index version at " + this.sivaFileName + " file.");
         }
     }
 
@@ -118,7 +120,7 @@ public class IndexReader {
         byte[] sig = new byte[3];
         this.sivaFile.readFully(sig);
         if (!Arrays.equals(sig, INDEX_SIGNATURE)) {
-            throw new SivaException("invalid index signature");
+            throw new SivaException("Invalid index signature at " + this.sivaFileName + " file.");
         }
     }
 }
