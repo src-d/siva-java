@@ -25,4 +25,7 @@ travis-test:
 clean:
 	$(SBT) clean
 
-
+maven-release:
+	$(SBT) publishLocal && \
+	$(SBT) publishSigned && \
+	$(SBT) sonatypeRelease
