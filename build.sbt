@@ -11,10 +11,7 @@ lazy val root = (project in file(".")).
     name := "siva-java",
     libraryDependencies += scalaTest % Test,
     libraryDependencies += scoverage % Test,
-    libraryDependencies += commonsIO % Test,
-
-    test in assembly := {},
-    assemblyJarName in assembly := s"${name.value}-uber.jar"
+    libraryDependencies += commonsIO % Test
   )
 
 parallelExecution in Test := false

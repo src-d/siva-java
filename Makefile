@@ -12,12 +12,9 @@ SBT = ./sbt ++$(SCALA_VERSION)
 # Rules
 all: clean build
 
-.PHONY: fatjar test clean
+.PHONY: build test clean travis-test
 build:
 	$(SBT) package
-
-fatjar:
-	$(SBT) assembly
 
 test:
 	$(SBT) test
