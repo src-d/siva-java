@@ -23,3 +23,10 @@ hs_err_pid*
 
 target/*
 project/target/*
+project/project/*
+.idea
+.cache*
+.#*
+.project
+.settings
+
