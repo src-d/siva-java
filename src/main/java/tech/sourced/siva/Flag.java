@@ -1,7 +1,19 @@
 package tech.sourced.siva;
 
+/**
+ * Flags used by the index to mark a file as deleted. Other flags could be added in future versions.
+ */
 enum Flag {
-    NO_FLAG, DELETE;
+
+    /**
+     * No flag.
+     */
+    NO_FLAG,
+
+    /**
+     * Deleted file.
+     */
+    DELETE;
 
     public static Flag fromInteger(int i) {
         switch (i) {

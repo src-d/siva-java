@@ -6,6 +6,10 @@ import java.util.Set;
 
 import static java.nio.file.attribute.PosixFilePermission.*;
 
+/**
+ * FileModeUtils maps siva files modes to UNIX files mode since in Siva Format v1 they are represented as Go os.FileMod.
+ * @see <a href="https://github.com/src-d/go-siva/issues/11"</a>
+ */
 public class FileModeUtils {
     private static final PosixFilePermission[] decodeMap = {
             OTHERS_EXECUTE,

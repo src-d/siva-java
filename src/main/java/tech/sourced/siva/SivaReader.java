@@ -9,7 +9,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 
 /**
- * {@link SivaReader} and all its outputs are thread safe.
+ * {@link SivaReader} and all its outputs are thread safe. This class handle the unpacked process of a siva file.
  */
 public class SivaReader {
 
