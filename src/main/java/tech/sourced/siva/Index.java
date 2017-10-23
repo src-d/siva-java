@@ -27,7 +27,11 @@ public interface Index {
     List<IndexEntry> glob(String pattern);
 }
 
-
+/**
+ * Base abstract class to implement custom Indexes.
+ *
+ * @see {@link FilteredIndex} and {@link CompleteIndex}
+ */
 abstract class BaseIndex implements Index {
     /**
      * This method will be called in the same order that the index has been read.
@@ -56,6 +60,9 @@ abstract class BaseIndex implements Index {
     }
 }
 
+/**
+ * A filtered {@link Index} with no duplicates, keeping the latest versions and excluding all the deleted files.
+ */
 class FilteredIndex extends BaseIndex {
     private final Map<String, IndexEntry> entries = new HashMap<>();
     private final Map<String, IndexEntry> blockEntries = new HashMap<>();
@@ -101,6 +108,9 @@ class FilteredIndex extends BaseIndex {
     }
 }
 
+/**
+ * CompleteIndex contains all the {@link IndexEntry}s, without any kind of filtering.
+ */
 class CompleteIndex extends BaseIndex {
     private final List<IndexEntry> entries = new ArrayList<>();
 
