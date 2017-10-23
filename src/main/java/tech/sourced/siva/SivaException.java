@@ -1,7 +1,7 @@
 package tech.sourced.siva;
 
 /**
- * Specific exception thrown when a problem happens while a siva file is manipulated.
+ * Specific exception thrown when a problem happens while a siva file is being manipulated.
  */
 public class SivaException extends Exception {
     SivaException(String message, Throwable cause) {

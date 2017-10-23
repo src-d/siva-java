@@ -5,7 +5,7 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.util.Set;
 
 /**
- * Set of properties an {@link IndexEntry} must have
+ * Header contains the meta information from a file that a single {@link IndexEntry} keeps in the siva file.
  */
 public class Header {
     private final String name;
@@ -14,12 +14,13 @@ public class Header {
     private final Flag flag;
 
     /**
-     * Constructor.
+     * Builds a Header object with the given file meta information(name, UNIX modification
+     * time, UNIX file mode and Flag).
      *
-     * @param name Entry name.
+     * @param name             Entry name.
      * @param modificationTime Modification time as UNIX time in nanoseconds.
-     * @param fileMode UNIX mode.
-     * @param flag supported flags @see {@link Flag}
+     * @param fileMode         UNIX mode.
+     * @param flag             supported flags @see {@link Flag}
      */
     Header(String name, FileTime modificationTime, Set<PosixFilePermission> fileMode, Flag flag) {
         this.name = name;

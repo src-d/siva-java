@@ -1,13 +1,13 @@
 package tech.sourced.siva;
 
 /**
- * IndexFooter keeps meta-information about the {@link Index}. It consists of:
+ * IndexFooter keeps meta information about the {@link Index}. It consists of:
  * - Number of entries in the block.
  * - Index size in bytes.
  * - Block size in bytes.
  * - CRC32.
  *
- * @see <a href="https://github.com/src-d/go-siva/blob/master/SPEC.md"</a>
+ * @see <a href="https://github.com/src-d/go-siva/blob/master/SPEC.md">Siva Format Specification</a>
  */
 class IndexFooter {
     private final int entryCount;
@@ -19,9 +19,9 @@ class IndexFooter {
      * Constructor.
      *
      * @param entryCount Number of entries in the block.
-     * @param indexSize Index size in bytes.
-     * @param blockSize Block size in bytes.
-     * @param crc32 CRC32.
+     * @param indexSize  Index size in bytes.
+     * @param blockSize  Block size in bytes.
+     * @param crc32      CRC32.
      */
     IndexFooter(int entryCount, long indexSize, long blockSize, int crc32) {
         this.entryCount = entryCount;

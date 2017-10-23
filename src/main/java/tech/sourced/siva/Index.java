@@ -3,16 +3,12 @@ package tech.sourced.siva;
 import java.nio.file.FileSystems;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Index stands for the part of the blocks of the siva files that contains {@link IndexEntry}s and the {@link IndexFooter}.
- * @see <a href="https://github.com/src-d/go-siva/blob/master/SPEC.md"</a>
+ *
+ * @see <a href="https://github.com/src-d/go-siva/blob/master/SPEC.md">Siva Format Specification</a>
  */
 public interface Index {
 

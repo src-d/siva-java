@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Reader of Siva {@link Index} to retrieve {@link IndexEntry}s.
  *
- * @see <a href="https://github.com/src-d/go-siva/blob/master/SPEC.md"</a>
+ * @see <a href="https://github.com/src-d/go-siva/blob/master/SPEC.md">Siva Format Specification</a>
  */
 public class IndexReader {
     private static final int INDEX_VERSION = 1;
@@ -20,7 +20,7 @@ public class IndexReader {
     private final String sivaFileName;
 
     /**
-     * Constructor.
+     * Constructs a Reader to read from a Siva {@link Index}.
      *
      * @param sivaFile siva file to read the index from.
      * @param sivaFileName siva file name.
