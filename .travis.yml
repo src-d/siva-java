@@ -15,9 +15,24 @@ cache:
 
 matrix:
   fast_finish: true
+
+  include:
+    - scala: 2.11.11
+      jdk: jdk8
+
+      before_deploy:
+        - openssl aes-256-cbc -K $encrypted_c290e193fbf2_key -iv $encrypted_c290e193fbf2_iv -in key.asc.enc -out key.asc -d
+        - gpg --no-default-keyring --primary-keyring ./project/.gnupg/pubring.gpg --secret-keyring ./project/.gnupg/secring.gpg --keyring ./project/.gnupg/pubring.gpg --fingerprint --import key.asc
+
+      deploy:
+        provider: script
+        script: make maven-release
+        skip_cleanup: true
+        on:
+          tags: true
   
 script:
   - make travis-test
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash) 
+  - bash <(curl -s https://codecov.io/bash)
