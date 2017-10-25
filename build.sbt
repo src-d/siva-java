@@ -6,7 +6,7 @@ lazy val root = (project in file(".")).
     inThisBuild(List(
       organization := "tech.sourced",
       scalaVersion := "2.11.11",
-      version := "0.1.0-SNAPSHOT"
+      version := "0.1.1"
     )),
     name := "siva-java",
     libraryDependencies += scalaTest % Test,
@@ -44,7 +44,6 @@ pomIncludeRepository := (_ => false)
 
 crossPaths := false
 publishMavenStyle := true
-exportJars := true
 
 val SONATYPE_USERNAME = scala.util.Properties.envOrElse("SONATYPE_USERNAME", "NOT_SET")
 val SONATYPE_PASSWORD = scala.util.Properties.envOrElse("SONATYPE_PASSWORD", "NOT_SET")
