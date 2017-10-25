@@ -8,31 +8,19 @@ This java library offers an API to read and unpack [siva files](https://github.c
 
 ## Usage
 
-For the moment `siva-java` is available on [jitpack](https://jitpack.io/#src-d/siva-java/). To include it as a dependency in your project managed by [sbt](http://www.scala-sbt.org/), add the resolver and the dependency to your `build.sbt` file:
+`siva-java` is available on [maven central](http://search.maven.org/#search%7Cga%7C1%7Csiva-java). To include it as a dependency in your project managed by [sbt](http://www.scala-sbt.org/) add the dependency to your `build.sbt` file:
 
 ```scala
-resolvers += "jitpack" at "https://jitpack.io"
-libraryDependencies += "com.github.src-d" % "siva-java" % "master-SNAPSHOT"
+libraryDependencies += "tech.sourced" % "siva-java" % "0.1.1"
 ```
 
-On the other hand, if you use [maven](https://maven.apache.org/) to manage your dependencies, you must add the [jitpack](https://jitpack.io/#src-d/siva-java/) repository to your build files:
-
-```xml
-<repositories>
-    <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
-    </repository>
-</repositories>
-```
-
-Then add the dependency:
+On the other hand, if you use [maven](https://maven.apache.org/) to manage your dependencies, you must add the dependency to your `pom.xml`:
 
 ```xml
 <dependency>
-    <groupId>com.github.src-d</groupId>
+    <groupId>tech.sourced</groupId>
     <artifactId>siva-java</artifactId>
-    <version>master-SNAPSHOT</version>
+    <version>0.1.1</version>
 </dependency>
 ```
 
