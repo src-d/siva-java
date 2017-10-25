@@ -3,7 +3,12 @@ package tech.sourced.siva;
 import java.nio.file.FileSystems;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Index stands for the part of the blocks of the siva files that contains {@link IndexEntry}s and the {@link IndexFooter}.
