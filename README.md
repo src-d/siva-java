@@ -76,7 +76,7 @@ To build the project and generate a jar file:
 
     make build
 
-It leaves the jar file  in `./target/scala-2.11/siva-java_2.11-0.1.0-SNAPSHOT.jar`
+It leaves the jar file  in `./target/siva-java-[version].jar`, being `[version]` the version specified in the `build.sbt`
 
 ### Tests
 
