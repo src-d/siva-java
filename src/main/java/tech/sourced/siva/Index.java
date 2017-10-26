@@ -10,7 +10,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Index stands for the part of the blocks of the siva files that contains {@link IndexEntry}s and the {@link IndexFooter}.
+ *
+ * @see <a href="https://github.com/src-d/go-siva/blob/master/SPEC.md">Siva Format Specification</a>
+ */
 public interface Index {
+
+    /**
+     * @return the list of {@link IndexEntry} that the index contains.
+     */
     List<IndexEntry> getEntries();
 
     /**
@@ -23,6 +32,11 @@ public interface Index {
     List<IndexEntry> glob(String pattern);
 }
 
+/**
+ * Base abstract class to implement custom Indexes.
+ *
+ * @see {@link FilteredIndex} and {@link CompleteIndex}
+ */
 abstract class BaseIndex implements Index {
     /**
      * This method will be called in the same order that the index has been read.
@@ -34,6 +48,9 @@ abstract class BaseIndex implements Index {
      */
     abstract void endIndexBlock();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<IndexEntry> glob(String pattern) {
         PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:".concat(pattern));
@@ -48,12 +65,18 @@ abstract class BaseIndex implements Index {
     }
 }
 
+/**
+ * A filtered {@link Index} with no duplicates, keeping the latest versions and excluding all the deleted files.
+ */
 class FilteredIndex extends BaseIndex {
     private final Map<String, IndexEntry> entries = new HashMap<>();
     private final Map<String, IndexEntry> blockEntries = new HashMap<>();
 
     private final Set<String> deleted = new HashSet<>();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     void add(IndexEntry entry) {
         String name = entry.getName();
@@ -69,6 +92,9 @@ class FilteredIndex extends BaseIndex {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     void endIndexBlock() {
         for (Map.Entry<String, IndexEntry> entry : this.blockEntries.entrySet()) {
@@ -78,24 +104,39 @@ class FilteredIndex extends BaseIndex {
         this.blockEntries.clear();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<IndexEntry> getEntries() {
         return new ArrayList<>(this.entries.values());
     }
 }
 
+/**
+ * CompleteIndex contains all the {@link IndexEntry}s, without any kind of filtering.
+ */
 class CompleteIndex extends BaseIndex {
     private final List<IndexEntry> entries = new ArrayList<>();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     void add(IndexEntry entry) {
         this.entries.add(entry);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     void endIndexBlock() {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<IndexEntry> getEntries() {
         return this.entries;

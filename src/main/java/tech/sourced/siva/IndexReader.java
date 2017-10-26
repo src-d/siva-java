@@ -6,6 +6,11 @@ import java.nio.file.attribute.FileTime;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Reader of Siva {@link Index} to retrieve {@link IndexEntry}s.
+ *
+ * @see <a href="https://github.com/src-d/go-siva/blob/master/SPEC.md">Siva Format Specification</a>
+ */
 public class IndexReader {
     private static final int INDEX_VERSION = 1;
     private static final int INDEX_FOOTER_SIZE = 24;
@@ -14,6 +19,12 @@ public class IndexReader {
     private final RandomAccessFile sivaFile;
     private final String sivaFileName;
 
+    /**
+     * Constructs a Reader to read from a Siva {@link Index}.
+     *
+     * @param sivaFile siva file to read the index from.
+     * @param sivaFileName siva file name.
+     */
     IndexReader(RandomAccessFile sivaFile, String sivaFileName) {
         this.sivaFile = sivaFile;
         this.sivaFileName = sivaFileName;
