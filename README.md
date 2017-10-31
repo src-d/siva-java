@@ -11,7 +11,7 @@ This java library offers an API to read and unpack [siva files](https://github.c
 `siva-java` is available on [maven central](http://search.maven.org/#search%7Cga%7C1%7Csiva-java). To include it as a dependency in your project managed by [sbt](http://www.scala-sbt.org/) add the dependency to your `build.sbt` file:
 
 ```scala
-libraryDependencies += "tech.sourced" % "siva-java" % "0.1.1"
+libraryDependencies += "tech.sourced" % "siva-java" % "[version]"
 ```
 
 On the other hand, if you use [maven](https://maven.apache.org/) to manage your dependencies, you must add the dependency to your `pom.xml`:
@@ -20,9 +20,11 @@ On the other hand, if you use [maven](https://maven.apache.org/) to manage your 
 <dependency>
     <groupId>tech.sourced</groupId>
     <artifactId>siva-java</artifactId>
-    <version>0.1.1</version>
+    <version>[version]</version>
 </dependency>
 ```
+
+In both cases, replace `[version]` with the [latest siva-java version](http://search.maven.org/#search%7Cga%7C1%7Csiva-java).
 
 ## Example of Usage
 
@@ -74,7 +76,7 @@ To build the project and generate a jar file:
 
     make build
 
-It leaves the jar file  in `./target/scala-2.11/siva-java_2.11-0.1.0-SNAPSHOT.jar`
+It leaves the jar file  in `./target/siva-java-[version].jar`, being `[version]` the version specified in the `build.sbt`
 
 ### Tests
 
