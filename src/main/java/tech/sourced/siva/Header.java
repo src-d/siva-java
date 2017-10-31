@@ -5,7 +5,8 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.util.Set;
 
 /**
- * Header contains the meta information from a file that a single {@link IndexEntry} keeps in the siva file.
+ * Header contains the meta information from a file that a single {@link IndexEntry}
+ * keeps in the siva file.
  */
 public class Header {
     private final String name;
@@ -22,7 +23,8 @@ public class Header {
      * @param fileMode         UNIX mode.
      * @param flag             supported flags @see {@link Flag}
      */
-    Header(String name, FileTime modificationTime, Set<PosixFilePermission> fileMode, Flag flag) {
+    Header(final String name, final FileTime modificationTime,
+           final Set<PosixFilePermission> fileMode, final Flag flag) {
         this.name = name;
         this.modificationTime = modificationTime;
         this.fileMode = fileMode;
@@ -32,28 +34,28 @@ public class Header {
     /**
      * @return Entry name.
      */
-    public String getName() {
+    public final String getName() {
         return name;
     }
 
     /**
      * @return Modification time as Unix time in nanoseconds.
      */
-    public FileTime getModificationTime() {
+    public final FileTime getModificationTime() {
         return modificationTime;
     }
 
     /**
      * @return UNIX file mode.
      */
-    public Set<PosixFilePermission> getFileMode() {
+    public final Set<PosixFilePermission> getFileMode() {
         return fileMode;
     }
 
     /**
      * @return {@link Flag}
      */
-    public Flag getFlag() {
+    public final Flag getFlag() {
         return flag;
     }
 }

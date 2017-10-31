@@ -14,6 +14,11 @@ lazy val root = (project in file(".")).
     libraryDependencies += commonsIO % Test
   )
 
+// check the style on compilation and fails if some goes wrong
+checkstyleSeverityLevel := Some(CheckstyleSeverityLevel.Error)
+// TODO remove deprecated code on sbt 0.13.14: https://github.com/sbt/sbt/issues/1444
+(checkstyle in Compile) <<= (checkstyle in Compile) triggeredBy (compile in Compile)
+
 parallelExecution in Test := false
 logBuffered in Test := false
 
