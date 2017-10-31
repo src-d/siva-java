@@ -11,9 +11,11 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Index stands for the part of the blocks of the siva files that contains {@link IndexEntry}s and the {@link IndexFooter}.
+ * Index stands for the part of the blocks of the siva files that contains
+ * {@link IndexEntry}s and the {@link IndexFooter}.
  *
- * @see <a href="https://github.com/src-d/go-siva/blob/master/SPEC.md">Siva Format Specification</a>
+ * @see <a href="https://github.com/src-d/go-siva/blob/master/SPEC.md">
+ * Siva Format Specification</a>
  */
 public interface Index {
 
@@ -40,6 +42,8 @@ public interface Index {
 abstract class BaseIndex implements Index {
     /**
      * This method will be called in the same order that the index has been read.
+     *
+     * @param entry to add to the index.
      */
     abstract void add(IndexEntry entry);
 
@@ -52,7 +56,7 @@ abstract class BaseIndex implements Index {
      * {@inheritDoc}
      */
     @Override
-    public List<IndexEntry> glob(String pattern) {
+    public List<IndexEntry> glob(final String pattern) {
         PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:".concat(pattern));
         List<IndexEntry> result = new ArrayList<>();
         for (IndexEntry entry : this.getEntries()) {
@@ -66,7 +70,8 @@ abstract class BaseIndex implements Index {
 }
 
 /**
- * A filtered {@link Index} with no duplicates, keeping the latest versions and excluding all the deleted files.
+ * A filtered {@link Index} with no duplicates, keeping the latest versions and excluding all
+ * the deleted files.
  */
 class FilteredIndex extends BaseIndex {
     private final Map<String, IndexEntry> entries = new HashMap<>();
@@ -78,7 +83,7 @@ class FilteredIndex extends BaseIndex {
      * {@inheritDoc}
      */
     @Override
-    void add(IndexEntry entry) {
+    void add(final IndexEntry entry) {
         String name = entry.getName();
 
         if (entry.getFlag() == Flag.DELETE) {
@@ -123,7 +128,7 @@ class CompleteIndex extends BaseIndex {
      * {@inheritDoc}
      */
     @Override
-    void add(IndexEntry entry) {
+    void add(final IndexEntry entry) {
         this.entries.add(entry);
     }
 

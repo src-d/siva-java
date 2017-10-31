@@ -7,7 +7,8 @@ package tech.sourced.siva;
  * - Block size in bytes.
  * - CRC32.
  *
- * @see <a href="https://github.com/src-d/go-siva/blob/master/SPEC.md">Siva Format Specification</a>
+ * @see <a href="https://github.com/src-d/go-siva/blob/master/SPEC.md">
+ * Siva Format Specification</a>
  */
 class IndexFooter {
     private final int entryCount;
@@ -23,7 +24,12 @@ class IndexFooter {
      * @param blockSize  Block size in bytes.
      * @param crc32      CRC32.
      */
-    IndexFooter(int entryCount, long indexSize, long blockSize, int crc32) {
+    IndexFooter(
+            final int entryCount,
+            final long indexSize,
+            final long blockSize,
+            final int crc32
+    ) {
         this.entryCount = entryCount;
         this.indexSize = indexSize;
         this.blockSize = blockSize;

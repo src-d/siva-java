@@ -9,7 +9,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * Reader of Siva {@link Index} to retrieve {@link IndexEntry}s.
  *
- * @see <a href="https://github.com/src-d/go-siva/blob/master/SPEC.md">Siva Format Specification</a>
+ * @see <a href="https://github.com/src-d/go-siva/blob/master/SPEC.md">
+ * Siva Format Specification</a>
  */
 public class IndexReader {
     private static final int INDEX_VERSION = 1;
@@ -22,35 +23,37 @@ public class IndexReader {
     /**
      * Constructs a Reader to read from a Siva {@link Index}.
      *
-     * @param sivaFile siva file to read the index from.
+     * @param sivaFile     siva file to read the index from.
      * @param sivaFileName siva file name.
      */
-    IndexReader(RandomAccessFile sivaFile, String sivaFileName) {
+    IndexReader(final RandomAccessFile sivaFile, final String sivaFileName) {
         this.sivaFile = sivaFile;
         this.sivaFileName = sivaFileName;
     }
 
     /**
-     * getFilteredIndex will return an index with all the deleted or modified elements already filtered.
+     * getFilteredIndex will return an index with all the deleted or modified elements already
+     * filtered.
      *
      * @return Index with the last entry of each file. Delete files will not appear in this index.
      * @throws SivaException If some error happens reading or validating the index.
      */
-    public synchronized Index getFilteredIndex() throws SivaException {
+    public final synchronized Index getFilteredIndex() throws SivaException {
         return this.readIndex(new FilteredIndex());
     }
 
     /**
-     * getCompleteIndex will return all the entries into the siva file, even modified or delete files.
+     * getCompleteIndex will return all the entries into the siva file, even modified or delete
+     * files.
      *
      * @return Index with all the entries in the siva file.
      * @throws SivaException If some error happens reading or validating the index.
      */
-    public synchronized Index getCompleteIndex() throws SivaException {
+    public final synchronized Index getCompleteIndex() throws SivaException {
         return this.readIndex(new CompleteIndex());
     }
 
-    private Index readIndex(BaseIndex index) throws SivaException {
+    private Index readIndex(final BaseIndex index) throws SivaException {
         try {
             // go to the end of the file
             this.sivaFile.seek(this.sivaFile.length());
@@ -63,7 +66,8 @@ public class IndexReader {
 
                 this.sivaFile.seek(this.sivaFile.getFilePointer() - INDEX_FOOTER_SIZE);
                 IndexFooter indexFooter = this.readIndexFooter();
-                this.sivaFile.seek(this.sivaFile.getFilePointer() - INDEX_FOOTER_SIZE - indexFooter.getIndexSize());
+                this.sivaFile.seek(this.sivaFile.getFilePointer() - INDEX_FOOTER_SIZE
+                        - indexFooter.getIndexSize());
 
                 this.readSignature();
                 this.readIndexVersion();
@@ -75,7 +79,8 @@ public class IndexReader {
                 index.endIndexBlock();
 
                 // go to the next index
-                this.sivaFile.seek(this.sivaFile.getFilePointer() - indexFooter.getBlockSize() + INDEX_FOOTER_SIZE);
+                this.sivaFile.seek(this.sivaFile.getFilePointer() - indexFooter.getBlockSize()
+                        + INDEX_FOOTER_SIZE);
             }
 
             return index;
@@ -84,7 +89,8 @@ public class IndexReader {
         }
     }
 
-    private IndexEntry readEntry(IndexFooter indexFooter, long block) throws IOException {
+    private IndexEntry readEntry(final IndexFooter indexFooter,
+                                 final long block) throws IOException {
         int entryNameLength = this.sivaFile.readInt();
         byte[] name = new byte[entryNameLength];
         this.sivaFile.readFully(name);
@@ -128,7 +134,7 @@ public class IndexReader {
     }
 
     private void readSignature() throws IOException, SivaException {
-        byte[] sig = new byte[3];
+        byte[] sig = new byte[INDEX_SIGNATURE.length];
         this.sivaFile.readFully(sig);
         if (!Arrays.equals(sig, INDEX_SIGNATURE)) {
             throw new SivaException("Invalid index signature at " + this.sivaFileName + " file.");

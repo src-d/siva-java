@@ -9,7 +9,8 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 
 /**
- * {@link SivaReader} and all its outputs are thread safe. This class handles the unpacked process of a siva file.
+ * {@link SivaReader} and all its outputs are thread safe. This class handles the
+ * unpacked process of a siva file.
  */
 public class SivaReader {
 
@@ -23,7 +24,7 @@ public class SivaReader {
      * @param sivaFile The siva file.
      * @throws FileNotFoundException If the file does not exists.
      */
-    public SivaReader(File sivaFile) throws FileNotFoundException {
+    public SivaReader(final File sivaFile) throws FileNotFoundException {
         this.sivaFile = new RandomAccessFile(sivaFile, "r");
         this.sivaFileName = sivaFile.getName();
         this.channel = this.sivaFile.getChannel();
@@ -37,7 +38,7 @@ public class SivaReader {
      * @return InputStream to be able to read the entire expected file.
      * @throws SivaException If some problem happens trying to read the siva file.
      */
-    public InputStream getEntry(IndexEntry indexEntry) throws SivaException {
+    public final InputStream getEntry(final IndexEntry indexEntry) throws SivaException {
         try {
             MappedByteBuffer mbb = this.channel.map(
                     FileChannel.MapMode.READ_ONLY,
@@ -52,21 +53,24 @@ public class SivaReader {
     }
 
     /**
-     * getIndex provides an {@link IndexReader} that points to the index into the siva file.
-     * Is recommended to get an index per thread, but anyways {@link IndexReader} is thread safe.
+     * getIndex provides an {@link IndexReader} that points to the index into
+     * the siva file.
+     * Is recommended to get an index per thread, but anyways
+     * {@link IndexReader} is thread safe.
      *
      * @return an {@link IndexReader}
      */
-    public IndexReader getIndex() {
+    public final IndexReader getIndex() {
         return new IndexReader(this.sivaFile, this.sivaFileName);
     }
 
     /**
      * Close closes the siva reader. When it is closed, it cannot be reused.
      *
-     * @throws SivaException if some error happens when we tried to close the internal channel or the siva file reader.
+     * @throws SivaException if some error happens when we tried to close the
+     *                       internal channel or the siva file reader.
      */
-    public void close() throws SivaException {
+    public final void close() throws SivaException {
         try {
             this.channel.close();
             this.sivaFile.close();
