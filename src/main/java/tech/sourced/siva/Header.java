@@ -10,8 +10,8 @@ import java.util.Set;
  */
 public class Header {
     private final String name;
-    private final FileTime modificationTime;
     private final Set<PosixFilePermission> fileMode;
+    private final FileTime modificationTime;
     private final Flag flag;
 
     /**
@@ -23,11 +23,11 @@ public class Header {
      * @param fileMode         UNIX mode.
      * @param flag             supported flags @see {@link Flag}
      */
-    Header(final String name, final FileTime modificationTime,
-           final Set<PosixFilePermission> fileMode, final Flag flag) {
+    Header(final String name, final Set<PosixFilePermission> fileMode,
+           final FileTime modificationTime, final Flag flag) {
         this.name = name;
-        this.modificationTime = modificationTime;
         this.fileMode = fileMode;
+        this.modificationTime = modificationTime;
         this.flag = flag;
     }
 

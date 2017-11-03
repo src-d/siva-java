@@ -17,11 +17,10 @@ import java.util.Set;
  * Siva Format Specification</a>
  */
 public class IndexEntry extends Header {
-    private static final long CRC_32_MASK = 0xffffffffL;
 
     private final long intStart;
     private final long size;
-    private final int crc32;
+    private final long crc32;
     private final long absStart;
 
     /**
@@ -37,11 +36,11 @@ public class IndexEntry extends Header {
      * @param crc32            CRC32.
      * @param absStart         Offset from the beginning of the block.
      */
-    public IndexEntry(final String name, final FileTime modificationTime,
-                      final Set<PosixFilePermission> fileMode, final Flag flag,
-                      final long intStart, final long size, final int crc32,
+    public IndexEntry(final String name, final Set<PosixFilePermission> fileMode,
+                      final FileTime modificationTime, final Flag flag,
+                      final long intStart, final long size, final long crc32,
                       final long absStart) {
-        super(name, modificationTime, fileMode, flag);
+        super(name, fileMode, modificationTime, flag);
         this.intStart = intStart;
         this.size = size;
         this.crc32 = crc32;
@@ -73,7 +72,7 @@ public class IndexEntry extends Header {
      * @return CRC32.
      */
     public final long getCrc32() {
-        return (long) this.crc32 & CRC_32_MASK;
+        return (long) this.crc32;
     }
 
 }
