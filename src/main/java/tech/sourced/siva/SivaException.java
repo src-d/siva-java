@@ -8,6 +8,9 @@ public class SivaException extends Exception {
     /**
      * Known issue about siva specification using unsigned integers.
      *
+     * @see <a href="https://github.com/src-d/siva-java#limitations">
+     * Siva Java Implementation Limitations</a>
+     *
      * @see <a href="https://github.com/src-d/go-siva/blob/master/SPEC.md">
      * Siva Format Specification</a>
      */
@@ -17,11 +20,19 @@ public class SivaException extends Exception {
     /**
      * Known issue about siva specification using unsigned integers.
      *
+     * @see <a href="https://github.com/src-d/siva-java#limitations">
+     * Siva Java Implementation Limitations</a>
+     *
      * @see <a href="https://github.com/src-d/go-siva/blob/master/SPEC.md">
      * Siva Format Specification</a>
      */
     static final String UNSIGNED_LONG =
             "Java implementation of siva doesn't support values greater than " + Long.MAX_VALUE;
+
+    /**
+     * CRC32 Index integrity checking failed.
+     */
+    static final String INVALID_CRC = "Wrong Index, Integrity verification failed";
 
     /**
      * Generate a {@link SivaException} using a message and a cause.

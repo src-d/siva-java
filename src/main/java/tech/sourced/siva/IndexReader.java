@@ -2,11 +2,14 @@ package tech.sourced.siva;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.file.attribute.FileTime;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.zip.CRC32;
 
 /**
  * Reader of Siva {@link Index} to retrieve {@link IndexEntry}s.
@@ -15,7 +18,6 @@ import java.util.concurrent.TimeUnit;
  *
  * @see <a href="https://github.com/src-d/siva-java#limitations">
  * Siva Java Implementation Limitations</a>
- *
  * @see <a href="https://github.com/src-d/go-siva/blob/master/SPEC.md">
  * Siva Format Specification</a>
  */
@@ -73,14 +75,14 @@ public class IndexReader {
 
                 long endOfBlock = this.sivaFile.getFilePointer();
 
-                offset = this.sivaFile.getFilePointer() - INDEX_FOOTER_SIZE;
-                this.sivaFile.seek(offset);
+                long startOfFooterOffset = this.sivaFile.getFilePointer() - INDEX_FOOTER_SIZE;
+                this.sivaFile.seek(startOfFooterOffset);
 
                 IndexFooter indexFooter = this.readFooter();
 
-                offset = this.sivaFile.getFilePointer() - INDEX_FOOTER_SIZE
+                long startOfIndexOffset = endOfBlock - INDEX_FOOTER_SIZE
                         - indexFooter.getIndexSize();
-                this.sivaFile.seek(offset);
+                this.sivaFile.seek(startOfIndexOffset);
 
                 this.readSignature();
                 this.readVersion();
@@ -91,9 +93,12 @@ public class IndexReader {
 
                 index.endIndexBlock();
 
+                checkIndexCrc(indexFooter, startOfIndexOffset);
+
                 // go to the next index
                 offset = this.sivaFile.getFilePointer() - indexFooter.getBlockSize()
                         + INDEX_FOOTER_SIZE;
+
                 this.sivaFile.seek(offset);
             }
 
@@ -185,6 +190,43 @@ public class IndexReader {
     private void checkUnsignedLongs(final long n, final String from) throws SivaException {
         if (n < 0) {
             throw new SivaException(from + SivaException.UNSIGNED_LONG);
+        }
+    }
+
+    private void checkIndexCrc(final IndexFooter footer, final long startOfIndex)
+            throws IOException, SivaException {
+
+        // The checksum object could be fed with more than (2^31)-1 bytes
+        // which is the biggest length allowed by the JVM for a data structure.
+
+        CRC32 checksum = new CRC32();
+
+        long mapTimes = footer.getIndexSize() / Integer.MAX_VALUE;
+        long start = startOfIndex;
+        MappedByteBuffer buf;
+        for (long i = 0; i < mapTimes; i++) {
+            buf = this.sivaFile.getChannel().map(
+                    FileChannel.MapMode.READ_ONLY,
+                    start,
+                    Integer.MAX_VALUE
+            );
+
+            checksum.update(buf);
+            start += Integer.MAX_VALUE;
+        }
+
+        long remaining = footer.getIndexSize() % Integer.MAX_VALUE;
+        buf = this.sivaFile.getChannel().map(
+                FileChannel.MapMode.READ_ONLY,
+                start,
+                remaining
+        );
+
+        checksum.update(buf);
+
+        long crc = checksum.getValue();
+        if (crc != footer.getCrc32()) {
+            throw new SivaException(SivaException.INVALID_CRC);
         }
     }
 }
