@@ -72,7 +72,7 @@ public class IndexEntry extends Header {
      * @return CRC32.
      */
     public final long getCrc32() {
-        return (long) this.crc32;
+        return this.crc32;
     }
 
 }

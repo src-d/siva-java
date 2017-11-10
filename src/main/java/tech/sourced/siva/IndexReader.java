@@ -75,14 +75,14 @@ public class IndexReader {
 
                 long endOfBlock = this.sivaFile.getFilePointer();
 
-                long startOfFooterOffset = this.sivaFile.getFilePointer() - INDEX_FOOTER_SIZE;
-                this.sivaFile.seek(startOfFooterOffset);
+                long startOfFooter = this.sivaFile.getFilePointer() - INDEX_FOOTER_SIZE;
+                this.sivaFile.seek(startOfFooter);
 
                 IndexFooter indexFooter = this.readFooter();
 
-                long startOfIndexOffset = endOfBlock - INDEX_FOOTER_SIZE
+                long startOfIndex = endOfBlock - INDEX_FOOTER_SIZE
                         - indexFooter.getIndexSize();
-                this.sivaFile.seek(startOfIndexOffset);
+                this.sivaFile.seek(startOfIndex);
 
                 this.readSignature();
                 this.readVersion();
@@ -93,13 +93,13 @@ public class IndexReader {
 
                 index.endIndexBlock();
 
-                checkIndexCrc(indexFooter, startOfIndexOffset);
+                checkIndexCrc(indexFooter, startOfIndex);
 
                 // go to the next index
-                offset = this.sivaFile.getFilePointer() - indexFooter.getBlockSize()
+                long nextEndOfBlock = this.sivaFile.getFilePointer() - indexFooter.getBlockSize()
                         + INDEX_FOOTER_SIZE;
 
-                this.sivaFile.seek(offset);
+                this.sivaFile.seek(nextEndOfBlock);
             }
 
             return index;
