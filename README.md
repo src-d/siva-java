@@ -91,6 +91,53 @@ To clean the project:
 
     make clean
 
+## Limitations
+
+We should note some known limitations and implementation divergences regarding the [main siva reference specification](https://github.com/src-d/go-siva/blob/master/SPEC.md)
+
+All the issues commented below are related to the `index` part of the blocks since there is where siva really place the metadata. Almost all this meta information is encoded as unsigned values, because of that, most of the problems come from the lack of unsigned values in the `JVM`.
+
+To avoid these limitations, in some cases, a cast to a bigger number type and a binary `AND` operation with a mask solves the problem. The trick consists of:
+
+```
+unsigned int8 (byte in Go): 255
+
+if you read this byte in java, it interprets the value as signed so the same bits in java result on:
+
+signed int8 (byte in Java): -1
+
+Casting this value to a java integer, keeps the value as  -1, so we apply a binary mask, with the less weight byte set to all "ones" and the rest of the byte to "zeros":
+
+byte b = readByte() // 255 read, but in java the value is -1
+int mask = 0x000000FF
+int n = b & mask // now n is an integer storing the value 255
+
+```
+
+This procedure is related on how `JVM` encodes the number values using [two's complement](https://en.wikipedia.org/wiki/Two%27s_complement) and it can apply for all the types which can be cast to a bigger number type.
+
+***Unsigned Integer 64 Limitation!***: a siva file with a value in those fields that the specification encodes as `uint64 ` can contain values in range [0, 2<sup>64</sup>-1] while java implementation only supports values in range [0, 2<sup>64-1</sup>-1]. There's no a number type bigger than a `long` (int64) in java, so this can't be avoided.
+
+Next, are pointed those parts of the `index` affected by different issues:
+
+- Index Signature: [The reference specification](https://github.com/src-d/go-siva/blob/master/SPEC.md) says that a sequence of three bytes (`IBA`) is used as the signature but for the [reference implementation in Go](https://github.com/src-d/go-siva) a byte is an `uint8` while in java a byte is an `int8`. The current java implementation doesn't take care about this since the three bytes used are all of them values less than 127, so these values are read properly.
+
+- Version: [The reference specification](https://github.com/src-d/go-siva/blob/master/SPEC.md) tells about use an `uint8` for this. For the moment it's read with java byte because siva is at version `1`.  A version greater than 127 would brake this implementation .
+
+- Index Entry:
+    - UNIX mode: is encoded as `uint32`, so in java implementation is cast to a long.
+    - The offset of the file content, relative to the beginning of the block: this is an `uint64` value, so the implementation just read it as a long and check that is not negative. ***Unsigned Integer 64 Limitation!***
+    - Size of the file content: encoded as a `uint64`, check no negative. ***Unsigned Integer 64 Limitation!***
+    - CRC32: `uint32` value cast to a `long` java type.
+    - Flags: `uint32` value, it's read without cast type since it only can contain values `0 (No Flags)` or `1 (Deleted)`.
+
+- Index Footer:
+    - Number of entries in the block:  `uint32` value cast to `long` java type.
+    - Index Size in bytes: `uint64` value can't be cast, check no negative. ***Unsigned Integer 64 Limitation!***
+    - Block size in bytes: `uint64`value cant't be cast, check no negative. ***Unsigned Integer 64 Limitation!***
+    - CRC32: `uint32` value cast to a `long` java type.
+
+***Other comments***: This java implementation verify the integrity of the index with the `CRC` in the Index Footer. The integrity of the files should be checked optionally with the `CRC` kept in the Index Entry by the clients of this library.
 
 ## License
 

@@ -11,10 +11,10 @@ package tech.sourced.siva;
  * Siva Format Specification</a>
  */
 class IndexFooter {
-    private final int entryCount;
+    private final long entryCount;
     private final long indexSize;
     private final long blockSize;
-    private final int crc32;
+    private final long crc32;
 
     /**
      * Constructor.
@@ -25,10 +25,10 @@ class IndexFooter {
      * @param crc32      CRC32.
      */
     IndexFooter(
-            final int entryCount,
+            final long entryCount,
             final long indexSize,
             final long blockSize,
-            final int crc32
+            final long crc32
     ) {
         this.entryCount = entryCount;
         this.indexSize = indexSize;
@@ -39,7 +39,7 @@ class IndexFooter {
     /**
      * @return Number of entries in the block.
      */
-    int getEntryCount() {
+    long getEntryCount() {
         return entryCount;
     }
 
@@ -60,7 +60,7 @@ class IndexFooter {
     /**
      * @return CRC32.
      */
-    int getCrc32() {
+    long getCrc32() {
         return crc32;
     }
 }
