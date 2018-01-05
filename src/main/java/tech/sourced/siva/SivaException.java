@@ -10,7 +10,6 @@ public class SivaException extends Exception {
      *
      * @see <a href="https://github.com/src-d/siva-java#limitations">
      * Siva Java Implementation Limitations</a>
-     *
      * @see <a href="https://github.com/src-d/go-siva/blob/master/SPEC.md">
      * Siva Format Specification</a>
      */
@@ -22,7 +21,6 @@ public class SivaException extends Exception {
      *
      * @see <a href="https://github.com/src-d/siva-java#limitations">
      * Siva Java Implementation Limitations</a>
-     *
      * @see <a href="https://github.com/src-d/go-siva/blob/master/SPEC.md">
      * Siva Format Specification</a>
      */
@@ -37,19 +35,21 @@ public class SivaException extends Exception {
     /**
      * Generate a {@link SivaException} using a message and a cause.
      *
-     * @param message The message of the exception
-     * @param cause   The cause of the exception
+     * @param fileName Name of the siva file being read
+     * @param message  The message of the exception
+     * @param cause    The cause of the exception
      */
-    SivaException(final String message, final Throwable cause) {
-        super(message, cause);
+    SivaException(final String fileName, final String message, final Throwable cause) {
+        super("Exception at file " + fileName + ": " + message, cause);
     }
 
     /**
      * Generate a {@link SivaException} using a message.
      *
-     * @param message The message of the exception
+     * @param fileName Name of the siva file being read
+     * @param message  The message of the exception
      */
-    SivaException(final String message) {
-        super(message);
+    SivaException(final String fileName, final String message) {
+        super("Exception at file " + fileName + ": " + message);
     }
 }

@@ -104,7 +104,7 @@ public class IndexReader {
 
             return index;
         } catch (IOException e) {
-            throw new SivaException("Error reading index of " + this.sivaFileName + " file.", e);
+            throw new SivaException(sivaFileName, "Error reading index of file.", e);
         }
     }
 
@@ -127,7 +127,7 @@ public class IndexReader {
         this.sivaFile.readFully(signature);
 
         if (!Arrays.equals(signature, INDEX_SIGNATURE)) {
-            throw new SivaException("Invalid index signature at " + this.sivaFileName + " file.");
+            throw new SivaException(sivaFileName, "Invalid index signature at.");
         }
     }
 
@@ -135,7 +135,7 @@ public class IndexReader {
         byte version = this.sivaFile.readByte();
 
         if (version != INDEX_VERSION) {
-            throw new SivaException("Invalid index version at " + this.sivaFileName + " file.");
+            throw new SivaException(sivaFileName, "Invalid index version.");
         }
     }
 
@@ -144,7 +144,7 @@ public class IndexReader {
 
         int entryNameLength = this.sivaFile.readInt();
         if (entryNameLength < 0) {
-            throw new SivaException(SivaException.FILE_NAME_LENGTH);
+            throw new SivaException(sivaFileName, SivaException.FILE_NAME_LENGTH);
         }
 
         byte[] nameBuf = new byte[entryNameLength];
@@ -189,7 +189,7 @@ public class IndexReader {
 
     private void checkUnsignedLongs(final long n, final String from) throws SivaException {
         if (n < 0) {
-            throw new SivaException(from + SivaException.UNSIGNED_LONG);
+            throw new SivaException(sivaFileName, from + SivaException.UNSIGNED_LONG);
         }
     }
 
@@ -226,7 +226,7 @@ public class IndexReader {
 
         long crc = checksum.getValue();
         if (crc != footer.getCrc32()) {
-            throw new SivaException(SivaException.INVALID_CRC);
+            throw new SivaException(sivaFileName, SivaException.INVALID_CRC);
         }
     }
 }
