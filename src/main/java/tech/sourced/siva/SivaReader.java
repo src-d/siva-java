@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.channels.NonReadableChannelException;
+import java.nio.channels.NonWritableChannelException;
 
 /**
  * {@link SivaReader} and all its outputs are thread safe. This class handles the
@@ -39,6 +41,11 @@ public class SivaReader {
      * @throws SivaException If some problem happens trying to read the siva file.
      */
     public final InputStream getEntry(final IndexEntry indexEntry) throws SivaException {
+        if (indexEntry.getSize() > Integer.MAX_VALUE) {
+            throw new SivaException(sivaFileName, "Index entry is too big. Size: "
+                    + indexEntry.getSize() + ", max size: " + Integer.MAX_VALUE + ".");
+        }
+
         try {
             MappedByteBuffer mbb = this.channel.map(
                     FileChannel.MapMode.READ_ONLY,
@@ -47,8 +54,9 @@ public class SivaReader {
             );
 
             return new ByteBufferBackedInputStream(mbb.asReadOnlyBuffer());
-        } catch (IOException e) {
-            throw new SivaException("Error reading index entry.", e);
+        } catch (IOException | NonWritableChannelException
+                | NonReadableChannelException | IllegalArgumentException e) {
+            throw new SivaException(sivaFileName, "Error reading index entry.", e);
         }
     }
 
@@ -75,7 +83,7 @@ public class SivaReader {
             this.channel.close();
             this.sivaFile.close();
         } catch (IOException e) {
-            throw new SivaException("Error closing siva reader", e);
+            throw new SivaException(sivaFileName, "Error closing siva reader", e);
         }
     }
 }
