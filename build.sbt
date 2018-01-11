@@ -11,7 +11,8 @@ lazy val root = (project in file(".")).
     name := "siva-java",
     libraryDependencies += scalaTest % Test,
     libraryDependencies += scoverage % Test,
-    libraryDependencies += commonsIO % Test
+    libraryDependencies += commonsIO % Test,
+    libraryDependencies += scalameter % Test
   )
 
 // check the style on compilation and fails if some goes wrong
