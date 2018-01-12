@@ -1,7 +1,6 @@
 package tech.sourced.siva.test
 
 import java.io.File
-import java.util.zip.CRC32
 
 import org.apache.commons.io.IOUtils
 import org.scalatest.{FlatSpec, Matchers}
@@ -20,16 +19,14 @@ object Utils extends FlatSpec with Matchers {
   }
 
   def checkEntries(entries: java.util.List[IndexEntry], reader: SivaReader): Unit = {
-    val crc32 = new CRC32()
-
+    val os = new CrcOutputStream()
     entries.asScala.foreach(e => {
-      crc32.reset()
+      os.reset()
       val is = reader.getEntry(e)
-      val content = IOUtils.toByteArray(is)
 
-      crc32.update(content)
+      IOUtils.copy(is, os)
 
-      e.getCrc32 should be(crc32.getValue)
+      e.getCrc32 should be(os.getValue)
     })
   }
 }
