@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- *
+ * RangeInputStream is an InputStream that provides only the
+ * specified amount of data from a bigger InputStream.
  */
 public class RangeInputStream extends InputStream {
     private static final int READ_MASK = 0xFF;
@@ -18,19 +19,18 @@ public class RangeInputStream extends InputStream {
      *
      * @param parent The parent InputStream where the data is coming from.
      * @param size   Size of bytes to read from.
-     * @throws IOException If is not possible to skip the amount
-     *                     of bytes provided to skip or in any other standard InputStream case.
      */
     public RangeInputStream(
             final InputStream parent,
-            final long size) throws IOException {
+            final long size) {
         this.parent = parent;
         remaining = size;
     }
 
     @Override
     public final int read() throws IOException {
-        if (--remaining >= 0) {
+        remaining--;
+        if (remaining >= 0) {
             return parent.read() & READ_MASK;
         } else {
             return -1;

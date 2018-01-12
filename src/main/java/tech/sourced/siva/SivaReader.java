@@ -43,8 +43,7 @@ public class SivaReader {
         try {
             InputStream is =
                     Channels.newInputStream(
-                            this.channel.position(indexEntry.getAbsStart()
-                            )
+                            this.channel.position(indexEntry.getAbsStart())
                     );
             return new RangeInputStream(
                     new BufferedInputStream(is),
