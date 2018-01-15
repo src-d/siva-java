@@ -5,8 +5,7 @@ lazy val root = (project in file(".")).
   settings(
     inThisBuild(List(
       organization := "tech.sourced",
-      scalaVersion := "2.11.11",
-      version := "0.1.3"
+      scalaVersion := "2.11.11"
     )),
     name := "siva-java",
     libraryDependencies += scalaTest % Test,
@@ -14,6 +13,9 @@ lazy val root = (project in file(".")).
     libraryDependencies += commonsIO % Test,
     libraryDependencies += scalameter % Test
   )
+
+git.useGitDescribe := true
+enablePlugins(GitVersioning)
 
 // check the style on compilation and fails if some goes wrong
 checkstyleSeverityLevel := Some(CheckstyleSeverityLevel.Error)
