@@ -1,14 +1,13 @@
 package tech.sourced.siva;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
-import java.nio.MappedByteBuffer;
+import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
-import java.nio.channels.NonReadableChannelException;
-import java.nio.channels.NonWritableChannelException;
 
 /**
  * {@link SivaReader} and all its outputs are thread safe. This class handles the
@@ -41,21 +40,16 @@ public class SivaReader {
      * @throws SivaException If some problem happens trying to read the siva file.
      */
     public final InputStream getEntry(final IndexEntry indexEntry) throws SivaException {
-        if (indexEntry.getSize() > Integer.MAX_VALUE) {
-            throw new SivaException(sivaFileName, "Index entry is too big. Size: "
-                    + indexEntry.getSize() + ", max size: " + Integer.MAX_VALUE + ".");
-        }
-
         try {
-            MappedByteBuffer mbb = this.channel.map(
-                    FileChannel.MapMode.READ_ONLY,
-                    indexEntry.getAbsStart(),
+            InputStream is =
+                    Channels.newInputStream(
+                            this.channel.position(indexEntry.getAbsStart())
+                    );
+            return new RangeInputStream(
+                    new BufferedInputStream(is),
                     indexEntry.getSize()
             );
-
-            return new ByteBufferBackedInputStream(mbb.asReadOnlyBuffer());
-        } catch (IOException | NonWritableChannelException
-                | NonReadableChannelException | IllegalArgumentException e) {
+        } catch (IOException e) {
             throw new SivaException(sivaFileName, "Error reading index entry.", e);
         }
     }

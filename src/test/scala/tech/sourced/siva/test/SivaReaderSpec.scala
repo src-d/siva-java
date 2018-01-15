@@ -1,14 +1,10 @@
 package tech.sourced.siva.test
 
-import java.io.File
 import java.nio.file.attribute.PosixFilePermissions
 import java.util.concurrent.TimeUnit
-import java.util.zip.CRC32
 
-import org.apache.commons.io.IOUtils
 import org.scalatest._
 import org.scalatest.prop.TableDrivenPropertyChecks._
-import tech.sourced.siva.SivaReader
 
 import scala.collection.JavaConverters._
 import scala.io.Source
@@ -34,7 +30,7 @@ class SivaReaderSpec extends FlatSpec with Matchers {
 
   "Index" should "be read correctly" in {
     forAll(fixtures) { (filename: String, elements: List[String], repeated: Boolean) =>
-      val sivaReader = getReader(filename)
+      val sivaReader = Utils.getReader(filename)
       val completeIndex = sivaReader.getIndex.getCompleteIndex
       val filteredIndex = sivaReader.getIndex.getFilteredIndex
 
@@ -52,7 +48,7 @@ class SivaReaderSpec extends FlatSpec with Matchers {
 
   "Glob" should "obtain filtered elements only" in {
     forAll(fixtures) { (filename: String, _: List[String], _: Boolean) =>
-      val sivaReader = getReader(filename)
+      val sivaReader = Utils.getReader(filename)
       val completeIndex = sivaReader.getIndex.getCompleteIndex
 
       val names = completeIndex.glob("*.txt").asScala.map(_.getName)
@@ -65,29 +61,18 @@ class SivaReaderSpec extends FlatSpec with Matchers {
 
   "getEntry" should "read correctly a file into a siva file" in {
     forAll(fixtures) { (filename: String, elements: List[String], repeated: Boolean) =>
-      val sivaReader = getReader(filename)
+      val sivaReader = Utils.getReader(filename)
 
-      val entries = sivaReader.getIndex.getCompleteIndex.getEntries.asScala
+      val entries = sivaReader.getIndex.getCompleteIndex.getEntries
 
-      val crc32 = new CRC32()
-
-      entries.foreach(e => {
-        crc32.reset()
-
-        val is = sivaReader.getEntry(e)
-        val content = IOUtils.toByteArray(is)
-
-        crc32.update(content)
-
-        e.getCrc32 should be(crc32.getValue)
-      })
+      Utils.checkEntries(entries, sivaReader)
 
       sivaReader.close()
     }
   }
 
   "file mode" should "change if the file has been overwritten" in {
-    val sivaReader = getReader("overwritten.siva")
+    val sivaReader = Utils.getReader("overwritten.siva")
 
     val entry = sivaReader.getIndex.getFilteredIndex.glob("gopher.txt").asScala.head
     PosixFilePermissions.toString(entry.getFileMode) should be("rwxrwxrwx")
@@ -99,7 +84,7 @@ class SivaReaderSpec extends FlatSpec with Matchers {
   }
 
   "file content" should "change if the file has been appended" in {
-    val sivaReader = getReader("basic-config-appended.siva")
+    val sivaReader = Utils.getReader("basic-config-appended.siva")
 
     sivaReader.getIndex.getCompleteIndex.glob("config").size() should be(2)
 
@@ -113,13 +98,5 @@ class SivaReaderSpec extends FlatSpec with Matchers {
     sivaReader.close()
   }
 
-  private def getReader(filename: String): SivaReader = {
-    val resourceUrl = getClass.getResource("/" + filename)
-    val file = new File(resourceUrl.toURI)
-
-    file.exists() should be(true)
-
-    new SivaReader(file)
-  }
 
 }
