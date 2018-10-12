@@ -76,7 +76,7 @@ To build the project and generate a jar file:
 
     make build
 
-It leaves the jar file  in `./target/siva-java-[version].jar`, being `[version]` the version specified in the `build.sbt`
+It leaves the jar file  at `./target/siva-java-[version].jar`, being `[version]` the version specified in the `build.sbt`
 
 ### Tests
 
@@ -93,16 +93,16 @@ To clean the project:
 
 ## Limitations
 
-We should note some known limitations and implementation divergences regarding the [main siva reference specification](https://github.com/src-d/go-siva/blob/master/SPEC.md)
+Some known limitations and implementation divergences regarding the [main siva reference specification](https://github.com/src-d/go-siva/blob/master/SPEC.md)
 
-All the issues commented below are related to the `index` part of the blocks since there is where siva really place the metadata. Almost all this meta information is encoded as unsigned values, because of that, most of the problems come from the lack of unsigned values in the `JVM`.
+All the issues commented below are related to the `index` part of the blocks since that is where *siva* really places the metadata. Most of the meta-information is encoded as unsigned values, because of this, most of the problems come from the lack of unsigned values in the `JVM`.
 
 To avoid these limitations, in some cases, a cast to a bigger number type and a binary `AND` operation with a mask solves the problem. The trick consists of:
 
 ```
 unsigned int8 (byte in Go): 255
 
-if you read this byte in java, it interprets the value as signed so the same bits in java result on:
+if you read this byte in Java, it interprets the value as signed. So the same bits in Java result on:
 
 signed int8 (byte in Java): -1
 
