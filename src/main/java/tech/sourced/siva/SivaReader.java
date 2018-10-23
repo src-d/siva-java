@@ -13,7 +13,7 @@ import java.nio.channels.FileChannel;
  * {@link SivaReader} and all its outputs are thread safe. This class handles the
  * unpacked process of a siva file.
  */
-public class SivaReader {
+public class SivaReader implements AutoCloseable {
 
     private final RandomAccessFile sivaFile;
     private final String sivaFileName;
