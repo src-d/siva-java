@@ -52,15 +52,14 @@ public class Main {
     public static void main(String[] args) {
         try {
             LOGGER.log(Level.INFO, "unpacking siva-file");
-            SivaReader sivaReader = new SivaReader(new File(DEFAULT_SIVA_FILE));
-            List<IndexEntry> index = sivaReader.getIndex().getFilteredIndex().getEntries();
-            for (IndexEntry indexEntry : index) {
-                InputStream entry = sivaReader.getEntry(indexEntry);
-                Path outPath = Paths.get(SIVA_UNPACKED_DIR.concat(indexEntry.getName()));
-                FileUtils.copyInputStreamToFile(entry, new File(outPath.toString()));
+            try (SivaReader sivaReader = new SivaReader(new File(DEFAULT_SIVA_FILE))) {
+                List<IndexEntry> index = sivaReader.getIndex().getFilteredIndex().getEntries();
+                for (IndexEntry indexEntry : index) {
+                    InputStream entry = sivaReader.getEntry(indexEntry);
+                    Path outPath = Paths.get(SIVA_UNPACKED_DIR.concat(indexEntry.getName()));
+                    FileUtils.copyInputStreamToFile(entry, new File(outPath.toString()));
+                }
             }
-
-            sivaReader.close();
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, ex.toString(), ex);
         }
