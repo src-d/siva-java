@@ -127,7 +127,7 @@ public class IndexReader {
         this.sivaFile.readFully(signature);
 
         if (!Arrays.equals(signature, INDEX_SIGNATURE)) {
-            throw new SivaException(sivaFileName, "Invalid index signature at.");
+            throw new SivaException(sivaFileName, "Invalid index signature.");
         }
     }
 
