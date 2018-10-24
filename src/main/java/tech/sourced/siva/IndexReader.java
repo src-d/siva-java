@@ -22,7 +22,7 @@ import java.util.zip.CRC32;
  * Siva Format Specification</a>
  */
 public class IndexReader {
-    private static final byte INDEX_VERSION = 1;
+    private static final int INDEX_VERSION = 1;
     private static final long INDEX_FOOTER_SIZE = 24;
     private static final byte[] INDEX_SIGNATURE = {'I', 'B', 'A'};
     private static final long READ_UINT32_MASK = 0xFFFFFFFFL;
@@ -132,7 +132,7 @@ public class IndexReader {
     }
 
     private void readVersion() throws IOException, SivaException {
-        byte version = this.sivaFile.readByte();
+        int version = this.sivaFile.readUnsignedByte();
 
         if (version != INDEX_VERSION) {
             throw new SivaException(sivaFileName, "Invalid index version.");

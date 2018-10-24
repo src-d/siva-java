@@ -126,8 +126,6 @@ Next, are pointed those parts of the `index` affected by different issues:
 
 - Index Signature: [The reference specification](https://github.com/src-d/go-siva/blob/master/SPEC.md) says that a sequence of three bytes (`IBA`) is used as the signature but for the [reference implementation in Go](https://github.com/src-d/go-siva) a byte is an `uint8` while in java a byte is an `int8`. The current java implementation doesn't take care about this since the three bytes used are all of them values less than 127, so these values are read properly.
 
-- Version: [The reference specification](https://github.com/src-d/go-siva/blob/master/SPEC.md) tells about use an `uint8` for this. For the moment it's read with java byte because siva is at version `1`.  A version greater than 127 would brake this implementation .
-
 - Index Entry:
     - UNIX mode: is encoded as `uint32`, so in java implementation is cast to a long.
     - The offset of the file content, relative to the beginning of the block: this is an `uint64` value, so the implementation just read it as a long and check that is not negative. ***Unsigned Integer 64 Limitation!***
