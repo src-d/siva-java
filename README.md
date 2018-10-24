@@ -24,7 +24,11 @@ On the other hand, if you use [maven](https://maven.apache.org/) to manage your 
 </dependency>
 ```
 
-In both cases, replace `[version]` with the [latest siva-java version](http://search.maven.org/#search%7Cga%7C1%7Csiva-java).
+If you use [gradle](https://gradle.org) to manage your dependencies, add the following to your `build.gradle` file in the `dependencies` section:
+
+    compile 'tech.sourced:siva-java:[version]'
+
+In all cases, replace `[version]` with the [latest siva-java version](http://search.maven.org/#search%7Cga%7C1%7Csiva-java).
 
 ## Example of Usage
 
