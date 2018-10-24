@@ -50,15 +50,13 @@ public class Main {
     private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
     public static void main(String[] args) {
-        try {
+        try (SivaReader sivaReader = new SivaReader(new File(DEFAULT_SIVA_FILE))) {
             LOGGER.log(Level.INFO, "unpacking siva-file");
-            try (SivaReader sivaReader = new SivaReader(new File(DEFAULT_SIVA_FILE))) {
-                List<IndexEntry> index = sivaReader.getIndex().getFilteredIndex().getEntries();
-                for (IndexEntry indexEntry : index) {
-                    InputStream entry = sivaReader.getEntry(indexEntry);
-                    Path outPath = Paths.get(SIVA_UNPACKED_DIR.concat(indexEntry.getName()));
-                    FileUtils.copyInputStreamToFile(entry, new File(outPath.toString()));
-                }
+            List<IndexEntry> index = sivaReader.getIndex().getFilteredIndex().getEntries();
+            for (IndexEntry indexEntry : index) {
+                InputStream entry = sivaReader.getEntry(indexEntry);
+                Path outPath = Paths.get(SIVA_UNPACKED_DIR.concat(indexEntry.getName()));
+                FileUtils.copyInputStreamToFile(entry, new File(outPath.toString()));
             }
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, ex.toString(), ex);
